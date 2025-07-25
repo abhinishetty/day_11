@@ -1,0 +1,257 @@
+Hooks:
+special function to use state and other function inside ur functional component without creating class component
+
+useState
+
+useEffect
+
+useMemo
+
+useRef
+
+=======
+1} useState
+function FirstComp(){
+   
+
+        let count=0;
+        function increment(){
+count ++;
+console.log(`Count: ${count}`);
+
+        }
+        console.log("Component rendered")
+         return(
+        <div>
+<h1>Functional Component Without State :</h1>
+<h2>Count:</h2>
+<button onClick={increment}>Increment</button>    
+  </div>
+    )
+}
+export default FirstComp;
+
+*React doesnt tract the change of variables so we use state
+so we use hook called useState
+
+import { useState } from "react";
+function FirstComp(){
+   
+const[count,setCount]=useState(0)
+       // let count=0;
+        function increment(){
+setCount(count+1)
+console.log(`Count: ${count}`);
+
+        }
+        console.log("Component rendered")
+         return(
+        <div>
+<h1>Functional Component Without State :</h1>
+<h2>Count:{count}</h2>
+<button onClick={increment}>Increment</button>    
+  </div>
+    )
+}
+export default FirstComp
+
+
+
+
+=======
+2}useEffect:
+componentDidMount()
+componnetDidUpdate
+componentWllUnmount()
+
+useEffect(()=>{}, an array of dependencies)
+
+import { useEffect } from "react";
+
+function SecondComp(){
+    useEffect(()=>{
+        console.log("useEffect called.........");
+    },[])
+    return(
+        <div>
+            <h1>Second component useeffect hook</h1>
+        </div>
+    )
+}
+export default SecondComp
+========
+useEffect, useState:
+
+import { useEffect, useState } from "react";
+function ThirdComp(){
+
+    const[count,setCount]=useState(0);
+    useEffect(()=>{
+        console.log("useEffect called........")
+        console.log(`count ${count}`)
+    },[count])
+    function increment(){
+        setCount(count+1);
+    }
+    return(
+        <div>
+            <h1>Third Component: </h1>
+            <h2>Count:{count}</h2>
+            <button onClick={increment}>Increment</button>
+        </div>
+    )
+}
+export default ThirdComp;
+===============================
+import { useState,useEffect } from "react";
+function FourthComp(){
+    const[count,setCount]=useState(0)
+    const[theme,setTheme]=useState("light")
+    useEffect(()=>{
+        console.log("use effect called..")
+        console.log(`count: ${count}`)
+        console.log(`Theme: ${theme}`)
+    },[theme]) //here we have give theme once  try without empty array i.e [] and once try count and check in console
+    return(
+        <div>
+            <h1>Fourth component:</h1>
+            <h2>Count: {count}</h2>
+            <button onClick={()=>setCount(count+1)}>Increment</button> <br></br>
+            <h2>Theme:{theme}</h2>
+            <button onClick={()=>setTheme(theme=='light'?'dark':'light')}>Change Theme</button>
+        </div>
+    )
+}
+export default FourthComp
+===================
+import { useState,useEffect } from "react";
+function FourthComp(){
+    const[count,setCount]=useState(0)
+    const[theme,setTheme]=useState("light")
+    useEffect(()=>{
+        console.log("count effect called..")
+        console.log(`count: ${count}`)
+        
+    },[count])  //try without [] and also [count]
+
+     useEffect(()=>{
+        console.log(" theme use effect called..")
+       
+        console.log(`Theme: ${theme}`)
+    },[theme])
+
+
+    return(
+        <div>
+            <h1>Fourth component:</h1>
+            <h2>Count: {count}</h2>
+            <button onClick={()=>setCount(count+1)}>Increment</button> <br></br>
+            <h2>Theme:{theme}</h2>
+            <button onClick={()=>setTheme(theme=='light'?'dark':'light')}>Change Theme</button>
+        </div>
+    )
+}
+export default FourthComp
+
+==========
+useMemo: react hook thst memorize the result of expensive functions and it only recomputes whn its dependies changes
+const name=useMemo(()=>{},dependency array)
+import { useState } from "react"
+function FifthComp(){
+const[count,setCount]=useState(0);
+const[number,setNumber]=useState(0)
+function expFunction(num){
+    console.log("Expensive function called.........")
+    
+        for(let i=1;i<=100000;i++){
+            return num*num
+        }
+    }
+const result=expFunction(number)
+    return (
+        <div>
+            <h1>Fifth component:</h1>
+            <h2>Result:{result}</h2>
+            <h3>Count: {count}</h3>
+            <button onClick={()=>setCount(count+1)}>Updatecount</button>
+            <h3>Number: {number}</h3>
+            <button onClick={()=>setNumber(number+5)}>Update  number</button>
+        </div>
+    )
+}
+export default FifthComp
+
+so to resolve :
+import { useState,useMemo } from "react"
+function FifthComp(){
+const[count,setCount]=useState(0);
+const[number,setNumber]=useState(0)
+function expFunction(num){
+    console.log("Expensive function called.........")
+    
+        for(let i=1;i<=100000;i++){
+            return num*num
+        }
+    }
+const result=useMemo(()=>expFunction(number),[number]) //dependent on number i.e whn number changes.only whn numb ris changes expensive function is called but not whn count is changes
+   //if number is same no need to display agin
+return (
+        <div>
+            <h1>Fifth component:</h1>
+            <h2>Result:{result}</h2>
+            <h3>Count: {count}</h3>
+            <button onClick={()=>setCount(count+1)}>Updatecount</button>
+            <h3>Number: {number}</h3>
+            <button onClick={()=>setNumber(number+5)}>Update  number</button>
+        </div>
+    )
+}
+export default FifthComp
+hence :
+Using useMemo solves the problem of the expensive function running on every render, ensuring it only runs when its dependent value (number) changes, thus improving performance.
+
+====================================================
+   useRef():
+   It is a react  hook that returns mutable reference obj which pesist accross the renders
+   also used to get reference of DoM element
+   function SixthComp(){
+function focus(){
+    let input_obj=document.getElementById("input")
+    input_obj.focus()
+}
+
+    return(
+        <div>
+<h1>Sixth component</h1>
+<input id="input" type="text"/><br></br>
+<button onClick={focus}>Focus Input</button>
+        </div>
+    )
+}
+export default SixthComp;
+
+=
+import { useRef } from "react";
+function SixthComp(){
+    const inputRef=useRef();
+function focus(){
+   inputRef.current.focus(); //going to attach input feild inside DOM
+   inputRef.current.value="React" //extra
+   inputRef.current.style.color="green"//extra
+   inputRef.current.style.display="none" //extra
+}
+
+    return(
+        <div>
+<h1>Sixth component</h1>
+<input id="input" type="text" ref={inputRef}/><br></br>
+<button onClick={focus}>Focus Input</button>
+        </div>
+    )
+}
+export default SixthComp;
+
+
+Because directly querying the DOM (like using getElementById) breaks React’s declarative model and can cause bugs,
+useRef is used to safely access DOM elements within React’s lifecycle without triggering extra renders.
+=======================================================
